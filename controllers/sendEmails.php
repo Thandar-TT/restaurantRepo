@@ -94,7 +94,7 @@ function sendVerificationEmail($userEmail, $token)
     <body>
       <div class="wrapper">
         <p>Thank you for signing up on our site. Please click on the link below to verify your account:.</p>
-        <a href="http://localhost/proj/test/projTest1/verify-email.php?token=' . $token . '">Verify Email!</a>
+        <a href="http://localhost/proj/test/restaurantRepo/restaurantRepo/verify-email.php?token=' . $token . '">Verify Email!</a>
       </div>
     </body>
 

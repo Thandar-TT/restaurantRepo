@@ -1,21 +1,7 @@
-<?php include 'controllers/authController.php'
-
-?>
-<?php
-// redirect user to login page if they're not logged in
-if (empty($_SESSION['id'])) {
-    header('location: loginv.php');
-}
-?>
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
 
 <head>
-	<script type="text/javascript">
-		function tellSuccess(){
-			document.getElementById("forTell").innerHTML="Success";
-	}
-	</script>
 	<!-- Mobile Specific Meta -->
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<!-- Favicon-->
@@ -29,7 +15,7 @@ if (empty($_SESSION['id'])) {
 	<!-- meta character set -->
 	<meta charset="UTF-8">
 	<!-- Site Title -->
-	<title>Rooftop Restaurant</title>
+	<title>About</title>
 
 	<link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i|Roboto:400,500" rel="stylesheet">
 	<!--
@@ -44,7 +30,6 @@ if (empty($_SESSION['id'])) {
 	<link rel="stylesheet" href="css/bootstrap.css">
 	<link rel="stylesheet" href="css/bootstrap-datepicker.css">
 	<link rel="stylesheet" href="css/main.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
 </head>
 
 <body>
@@ -60,7 +45,7 @@ if (empty($_SESSION['id'])) {
 						<a  href="menu.html">Place Order</a>
 					</div>
 					<div class="col-3 logo">
-						<a href="index.php"><img class="mx-auto" src="img/logo.png" alt=""></a>
+						<a href="index.html"><img class="mx-auto" src="img/logo.png" alt=""></a>
 					</div>
 					<nav class="col navbar navbar-expand-md justify-content-end">
 
@@ -98,195 +83,117 @@ if (empty($_SESSION['id'])) {
 	<!--================ End Header Area =================-->
 
 	<!--================ Start banner Area =================-->
-	<section class="home-banner-area relative">
+	<section class="banner-area relative">
 		<div class="container">
 			<div class="row height align-items-center justify-content-center">
-				<div class="home-banner-content col-lg-5">
-					<h1>Reservation</h1>
+				<div class="banner-content col-lg-6">
+					<h1>about us</h1>
 					<hr>
-					<p>A Fine Dinning Restaurant</p>
-					<div id="fortell"></div>
-					
-				</div>
-			</div>
-		</div>
-	</section>
-	<!--================ End banner Area =================-->
-
-	<!--================ Left Right And Banner Icon =================-->
-	<div class="go-down">
-		<a href="#menu_area">
-			<img class="go-down-img" src="img/go-down.png" alt="">
-		</a>
-	</div>
-	<div class="fixed-view-menu">
-		<p>
-			<a href="menu.html">view menu</a>
-		</p>
-	</div>
-	<div class="fixed-book-table">
-		<p>
-			<?php
-			$IDtoken=$_SESSION['id'];
-			echo "<a href=\"http://localhost/proj/test/restaurantRepo/restaurantRepo/comingRes.php?token= $IDtoken\">Coming reservations</a>";
-			?>
-			
-		</p>
-	</div>
-	<!--================ Left Right And Banner Icon =================-->
-
-	<!--================ Menu Area =================-->
-	
-	<!--================End Menu Area =================-->
-
-	<!--================ Gallery Area =================-->
-	
-	<!--================ End Gallery Area =================-->
-	<?php
-	require_once 'controllers/sendEmails.php';
-	//set up connection	
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "cpo";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-//get last rid, prepare new rid, 
-$sql = "SELECT count from resCount";
-$result = $conn->query($sql);
-$row=mysqli_fetch_row($result);
-$lastRid=$row[0];
-	mysqli_free_result($result);
-	$lastRid++;
-    $conn->close();
-	require_once "config.php";
-	$numPeople=$rdate=$rtime=$rphone=$UserEmail="";
-	if($_SERVER["REQUEST_METHOD"] == "POST"){
-    // Validate username
-    if(empty(trim($_POST["num-people"])) || empty(trim($_POST["rdate"]))){
-        $username_err = "Please complete the form.";
-    } 
-    else
-    {
-    	$numPeople = trim($_POST["num-people"]);
-    	$rdate = trim($_POST["rdate"]);
-    	$rtime = trim($_POST["rtime"]);
-    	$ruserID=$_SESSION['id'];
-    	$rphone = trim($_POST["rphone"]);
-    	$UserEmail = trim($_POST["remail"]);
-    	$rstatus=3;
-    	$sql = "INSERT INTO reservations (rid,numPeople,rdate,rtime,userID, phone,email,rstatus) VALUES (?, ?, ?,?, ?, ?,?, ?)";
-         
-        if($stmt = mysqli_prepare($link, $sql)){
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ssssssss",$p_rid, $p_numPeople, $p_rdate,$p_rtime,$p_userID,$p_rphone,$p_remail,$p_rstatus);
-            
-            // Set parameters
-            
-            $prid= $lastRid;
-            $p_numPeople = $numPeople;
-            $p_rdate = $rdate;
-            $p_rtime=$rtime;
-            $p_userID=$ruserID;
-            $p_rphone=$rphone;
-            $p_remail=$UserEmail;
-            $p_rstatus=$rstatus;
-            
-            // Attempt to execute the prepared statement
-            if(mysqli_stmt_execute($stmt)){
-                // Redirect to login page
-                //header("location: register.php");
-                //echo "Successfully done.";
-            } 
-            /*else{
-                echo "Something went wrong. Please try again later.";
-            }*/
-        }
-         
-        // Close statement
-        mysqli_stmt_close($stmt);
-        mysqli_close($link);
-        sendResEmail($UserEmail,$numPeople,$rdate,$rtime);
-    }
-}
-	?>
-
-
-	<!--================ Reservation Area =================-->
-	<br><br><br>
-	<section class="reservation-area">
-		<div class="container">
-			<div class="row align-items-center">
-				<div class="col-lg-7 col-md-6">
-					<form class="booking-form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-						<div class="row">
-							<div class="col-lg-12 d-flex flex-column mb-20">
-								<input name="num-people" placeholder="Num people" onfocus="this.placeholder = ''" onblur="this.placeholder = 'num people'"
-								 class="form-control" required="" type="text">
-							</div>
-
-							<div class="col-lg-12 d-flex flex-column mb-20">
-								<input name="rdate" class="form-control datepicker" placeholder="r Date" onfocus="this.placeholder = ''"
-								 onblur="this.placeholder = 'r Date'" class="form-control" required="" type="text">
-							</div>
-							<div class="col-lg-12 d-flex flex-column mb-20">
-								<input name="rtime" placeholder="rtime" onfocus="this.placeholder = ''" onblur="this.placeholder = 'rtime'"
-								 class="form-control" required="" type="text">
-							</div>
-							<div class="col-lg-12 d-flex flex-column mb-20">
-								<input name="rphone" placeholder="rphone" onfocus="this.placeholder = ''" onblur="this.placeholder = 'rphone'"
-								 class="form-control" required="" type="text">
-							</div>
-							<div class="col-lg-12 d-flex flex-column mb-20">
-								<input name="remail" placeholder="email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'email'"
-								 class="form-control" required="" type="text">
-							</div>
-
-							<div class="col-lg-12 d-flex justify-content-end">
-								<button class="primary-btn dark mt-30 text-uppercase" onclick="tellSuccess()">Send Request</button>
-							</div>
-							<div class="alert-msg"></div>
-						</div>
-					</form>
-				</div>
-				<div class="offset-lg-1 col-lg-4 col-md-6">
-					<div class="section-title relative">
-						<h1>
-							Book a <br>
-							Table or <br>
-							Rooms for <br>
-							private <br>
-							dining
-						</h1>
+					<div class="breadcrmb">
 						<p>
-							Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
-							magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-							consequat.
+							<a href="index.html">home</a>
+							<span class="lnr lnr-arrow-right"></span>
+							<a href="about.html">about</a>
 						</p>
 					</div>
 				</div>
 			</div>
 		</div>
 	</section>
-	
-	<!--================End Reservation Area =================-->
+	<!--================ End banner Area =================-->
 
-	<!--================ Chefs Quotes Area =================-->
-	
-	<!--================ End Chefs Quotes Area =================-->
+	<!--================ About Area =================-->
+	<section class="about-area section-gap-top">
+		<div class="container">
+			<div class="row align-items-center">
+				<div class="col-lg-6 col-md-6">
+					<div class="">
+						<img class="img-fluid" src="img/about-img.jpg" alt="">
+					</div>
+				</div>
+				<div class="offset-lg-1 col-lg-5 col-md-6">
+					<div class="section-title relative">
+						<h1>
+							About <br>
+							Rooftop <br>
+							Dinning
+						</h1>
+						<p>
+							Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
+							magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+							consequat. consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+							enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!--================ End About Area =================-->
 
 	<!--================ Start Call To Action Area =================-->
-	
+	<section class="container section-gap-top">
+		<div class="callto-action-area relative">
+			<div class="row d-flex justify-content-center">
+				<div class="col-lg-12 p-0">
+					<div class="cta-owl owl-carousel">
+						<div class="item">
+							<div class="cta-img">
+								<img src="img/callaction-bg.jpg" class="img-fluid" alt="">
+							</div>
+							<div class="text-box text-center">
+								<h3 class="mb-10">Main Course</h3>
+								<p>
+									Chicken Steak with gerlic bread & Fries
+								</p>
+							</div>
+						</div>
+						<div class="item">
+							<div class="cta-img">
+								<img src="img/callaction-bg.jpg" class="img-fluid" alt="">
+							</div>
+							<div class="text-box text-center">
+								<h3 class="mb-10">Main Course</h3>
+								<p>
+									Chicken Steak with gerlic bread & Fries
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
 	<!--================ End Call To Action Area =================-->
 
-	<!--================ Contact Area =================-->
-	
-	<!--================ End Contact Area =================-->
+	<!--================ Chefs Quotes Area =================-->
+	<section class="chefs-quotes-area section-gap">
+		<div class="container">
+			<div class="row align-items-center">
+				<div class="col-lg-5">
+					<div class="section-title relative">
+						<h1>
+							Chef’s <br>
+							Quotes
+						</h1>
+						<p>
+							Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
+							magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+							consequat. consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+							enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Quotes
+						</p>
+						<img src="img/signature.png" class="img-fluid" alt="">
+					</div>
+				</div>
+				<div class="offset-lg-1 col-lg-6 col-md-6">
+					<div>
+						<img class="chef-img" src="img/chefs-quotes.jpg" class="img-fluid" alt="">
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!--================ End Chefs Quotes Area =================-->
 
 	<!--================ Start Footer Area =================-->
 	<footer class="footer-area section-gap">
