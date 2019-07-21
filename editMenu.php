@@ -115,26 +115,35 @@
 							Edit Menu<br>
 							Status<br>
 						</h1>
-						<form class="booking-form" id="myForm" action="">
+							<form class="booking-form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
 						<div class="row">
 							<div class="col-lg-12 d-flex flex-column mb-20">
-								<input name="Report-name" placeholder="Menu ID" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Menu ID'"
+								<input name="idInput" placeholder="Menu ID" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Menu ID'"
 								 class="form-control" required="" type="text">
 							</div>
 
 							<div class="col-lg-12 d-flex flex-column mb-20">
-								<div class="nice-select app-select form-control " tabindex="0">
+								<!--<div class="nice-select app-select form-control " tabindex="0">-->
+									<!---
 									<span class="current">Status</span>
 									<ul class="list">
 										<li data-value="1" class="option">Available</li>
 										<li data-value="2" class="option">Suspended</li>
 										<li data-value="3" class="option">Not available</li>
-									</ul>
-								</div>
+									</ul> 
+									-------->
+									<select  name="status">
+<option class="option" value="No Payment Options Selected">[Choose Option Below]</option>
+<option class="option" value="Available">Available</option>
+<option class="option" value="Suspended">Suspended</option>
+<option class="option" value="Unavailable">Unavailable</option>
+</select>
+									
+								<!--</div>-->
 							</div>
 
 							<div class="col-lg-12 d-flex justify-content-end">
-								<button class="primary-btn dark mt-30 text-uppercase">Submit</button>
+								<button class="primary-btn dark mt-30 text-uppercase" type="submit">Submit</button>
 							</div>
 							<div class="alert-msg"></div>
 						</div>
@@ -163,20 +172,13 @@
                         <tr>
                         <th>Menu ID</th>
                         <th>Name</th>
-                        <th>Price</th>
+                        <th>Price($)</th>
                         <th>Status</th>
                     </tr>
 
                     
                     <?php
-//if(rand(1,3) == 1){
-    /* Fake an error */
-    //header("HTTP/1.0 404 Not Found");
-    //die();
-//}
 
-/* Send a string after a random number of seconds (2-10) */
-//sleep(rand(2,3));
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -189,17 +191,44 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "SELECT * from reserve";
-$result = $conn->query($sql);
+if($_SERVER["REQUEST_METHOD"] == "POST")
+{
+	echo "something";
+	$id_input= trim($_POST["idInput"]);
+    	$mstatus = $_POST["status"];
+	$sql = "update menu set mStatus='$mstatus' where mid='$id_input'";
+	
 
-if ($result->num_rows > 0) {
+		//$conn->query($sql);
+		if ($conn->query($sql) === TRUE) 
+		{
+    		echo "New record created successfully";
+		} 
+		else 
+		{
+    		echo "Error: " . $sql . "<br>" . $conn->error;
+		}
+}
+
+
+
+
+    	$sql = "SELECT * from menu";
+    	$result = $conn->query($sql);
+	
+    	if ($result->num_rows > 0) {
     // output data of each row
+
     while($row = $result->fetch_assoc()) {
-        echo "<tr><td>" . $row["eventName"] . "</td><td>". $row["eventdate"]."</td><td>".$row["eventName"]."</td><td>".$row["eventdate"]."</td></tr>";
+        echo "<tr><td>" . $row["mid"] . "</td><td>". $row["mName"]."</td><td>".$row["mPrice"]."</td><td>".$row["mStatus"]."</td></tr>";
+    
+}
     }
-} else {
+
+ else {
     echo "0 results";
 }
+
 $conn->close();
 ?>
 </table>
